@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 public class MessagePatchDTO {
-    private long memberId;
+    private long messageId;
     @NotBlank(message = "메시지는 비어 있을 수 없습니다.")
     private String message;
 }

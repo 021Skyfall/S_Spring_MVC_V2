@@ -16,10 +16,9 @@ public class MessageService {
         return messageRepository.save(message);
     }
 
-    // 다시 구현
-//    public Message updateMessage(long messageId,Message message) {
-//        return messageRepository.;
-//    }
+    public Message updateMessage(Message message) {
+        return messageRepository.save(message);
+    }
 
     public Message findMessage(long messageId) {
         return messageRepository.findById(messageId).get();

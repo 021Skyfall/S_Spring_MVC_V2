@@ -34,10 +34,13 @@ public class MessageController {
         return ResponseEntity.ok(mapper.messageToMessageResponseDTO(message));
     }
 
-//    @PatchMapping("/{message-id}")
-//    public ResponseEntity patchMessage(@PathVariable("message-id") @Positive long messageId,
-//                                       @Validated @RequestBody MessagePatchDTO messagePatchDTO) {
-//    }
+    @PatchMapping("/{message-id}")
+    public ResponseEntity patchMessage(@PathVariable("message-id") @Positive long messageId,
+                                       @Validated @RequestBody MessagePatchDTO messagePatchDTO) {
+        messagePatchDTO.setMessageId(messageId);
+        Message message = service.updateMessage(mapper.messagePatchDtoToMessage(messagePatchDTO));
+        return ResponseEntity.ok(mapper.messageToMessageResponseDTO(message));
+    }
 
     @GetMapping("/{message-id}")
     public ResponseEntity getMessage(@PathVariable("message-id") @Positive long messageId) {
