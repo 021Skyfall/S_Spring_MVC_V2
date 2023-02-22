@@ -12,8 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.constraints.Positive;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -22,12 +24,18 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class CoffeeController {
+    private final static String COFFEE_DEFAULT_URL = "/v1/coffees";
     private CoffeeService service;
     private CoffeeMapper mapper;
 
     @PostMapping
     public ResponseEntity postCoffee(@Validated @RequestBody CoffeePostDTO coffeePostDTO) {
         Coffee coffee = service.createCoffee(mapper.coffeePostDtoToCoffee(coffeePostDTO));
+        URI location = UriComponentsBuilder
+                .newInstance()
+                .path(COFFEE_DEFAULT_URL + "/{coffee-id}")
+                .buildAndExpand(coffee.getCoffeeId())
+                .toUri();
         return new ResponseEntity<>(mapper.coffeeToCoffeeResponseDto(coffee), HttpStatus.CREATED);
     }
 

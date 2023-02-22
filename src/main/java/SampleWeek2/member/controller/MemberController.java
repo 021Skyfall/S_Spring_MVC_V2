@@ -12,8 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.constraints.Positive;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -22,12 +24,18 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class MemberController {
+    private final static String MEMBER_DEFAULT_URL = "/v1/members";
     private final MemberService service;
     private final MemberMapper mapper;
 
     @PostMapping
     public ResponseEntity postMember(@Validated @RequestBody MemberPostDTO memberPostDTO) {
         Member response = service.createMember(mapper.memberPostDtoToMember(memberPostDTO));
+        URI location = UriComponentsBuilder
+                .newInstance()
+                .path(MEMBER_DEFAULT_URL + "/{member-id}")
+                .buildAndExpand(response.getMemberId())
+                .toUri();
         return new ResponseEntity<>(mapper.memberToMemberResponseDto(response), HttpStatus.CREATED);
     }
 
@@ -54,7 +62,7 @@ public class MemberController {
 
     @DeleteMapping("/{member-id}")
     public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId) {
-        service.deleteMember();
+        service.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
